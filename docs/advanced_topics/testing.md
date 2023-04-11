@@ -261,3 +261,29 @@ Filling in the `path` / `numchild` / `depth` fields is necessary in order for tr
 `url_path` is another field that can cause errors in some uncommon cases if it isn't filled in.
 
 The [Treebeard docs](https://django-treebeard.readthedocs.io/en/latest/mp_tree.html) might help in understanding how this works.
+
+### Creating fake permissions for unit tests
+
+To fake permissions for unit tests in Wagtail CMS, you can use the `add_permission()` method of the Group model provided by Django's built-in auth app.
+
+```python
+from django.contrib.auth.models import Group, Permission
+from wagtail.core.models import Page
+from wagtail.tests.utils import WagtailPageTests
+
+class MyPageTests(WagtailPageTests):
+    def setUp(self):
+        super().setUp()
+
+        # Create a group and add the required permission
+        ...
+
+        # Create a user and assign them to the group
+        ...
+
+    def test_can_publish_page(self):
+        # Create a test page
+            ...
+        # Ensure that the user can publish the page
+        self.assertTrue(self.user.has_perm('wagtailcore.publish_page', page))
+```
